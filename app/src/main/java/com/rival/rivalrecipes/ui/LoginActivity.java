@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes;
+package com.rival.rivalrecipes.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,6 +28,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.rival.rivalrecipes.R;
 
 import java.util.ArrayList;
 import java.util.List;

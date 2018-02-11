@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes;
+package com.rival.rivalrecipes.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +15,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.rival.rivalrecipes.dummy.DummyContent;
+import com.rival.rivalrecipes.R;
+import com.rival.rivalrecipes.data.dummy.DummyContent;
 
 import java.util.List;
 

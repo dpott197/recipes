@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes.dummy;
+package com.rival.rivalrecipes.data.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

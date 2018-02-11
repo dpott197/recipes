@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes;
+package com.rival.rivalrecipes.ui;
 
 import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rival.rivalrecipes.dummy.DummyContent;
+import com.rival.rivalrecipes.R;
+import com.rival.rivalrecipes.data.dummy.DummyContent;
 
 /**
  * A fragment representing a single Recipe detail screen.
