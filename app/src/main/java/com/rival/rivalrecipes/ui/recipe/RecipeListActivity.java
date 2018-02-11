@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes.ui;
+package com.rival.rivalrecipes.ui.recipe;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 
 import com.rival.rivalrecipes.R;
-import com.rival.rivalrecipes.data.dummy.DummyContent;
+import com.rival.rivalrecipes.data.RecipesRepository;
 
 import java.util.List;
 
@@ -68,19 +68,19 @@ public class RecipeListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, RecipesRepository.ITEMS, mTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final RecipeListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<RecipesRepository.Recipe> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                RecipesRepository.Recipe item = (RecipesRepository.Recipe) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item.id);
@@ -100,7 +100,7 @@ public class RecipeListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(RecipeListActivity parent,
-                                      List<DummyContent.DummyItem> items,
+                                      List<RecipesRepository.Recipe> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;

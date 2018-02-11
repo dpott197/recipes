@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes.ui;
+package com.rival.rivalrecipes.ui.recipe;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes.ui;
+package com.rival.rivalrecipes.ui.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
