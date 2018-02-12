@@ -17,9 +17,9 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class LiveDataSource implements DataSource {
+public class RemoteDataSource implements DataSource {
 
-    private static final String TAG = "LiveDataSource";
+    private static final String TAG = "RemoteDataSource";
 
     // URL(s) and Path(s)
     private static final String BASE_URL = "https://mobile.rival.run";
@@ -34,7 +34,7 @@ public class LiveDataSource implements DataSource {
     private static final String POST = "POST";
     public static final String ACCEPT = "Accept";
 
-    protected static LiveDataSource sRecipeService;
+    protected static RemoteDataSource sRecipeService;
 
     public void setUserToken(String userToken) {
         this.userToken = userToken;
@@ -42,15 +42,15 @@ public class LiveDataSource implements DataSource {
 
     private String userToken = "validtoken12345";
 
-    public LiveDataSource() {
+    public RemoteDataSource() {
 
     }
 
     public static void init() {
-        sRecipeService = new LiveDataSource();
+        sRecipeService = new RemoteDataSource();
     }
 
-    public static LiveDataSource getInstance() {
+    public static RemoteDataSource getInstance() {
         return sRecipeService;
     }
 
@@ -116,11 +116,11 @@ public class LiveDataSource implements DataSource {
         return userToken;
     }
 
-    protected String getString(String urlString) throws IOException {
+    private String getString(String urlString) throws IOException {
         return new String(getBytes(urlString), "UTF-8");
     }
 
-    protected byte[] getBytes(String urlString) throws IOException {
+    private byte[] getBytes(String urlString) throws IOException {
         URL url = new URL(urlString);
 
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -144,7 +144,7 @@ public class LiveDataSource implements DataSource {
         }
     }
 
-    protected String post(String urlString, JSONObject jsonObject) throws IOException {
+    private String post(String urlString, JSONObject jsonObject) throws IOException {
         HttpsURLConnection connection = null;
         try {
             URL url = new URL(urlString);

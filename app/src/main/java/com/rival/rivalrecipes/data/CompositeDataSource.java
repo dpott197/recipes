@@ -3,8 +3,8 @@ package com.rival.rivalrecipes.data;
 import android.content.Context;
 
 import com.rival.rivalrecipes.data.source.DataSource;
-import com.rival.rivalrecipes.data.source.LiveDataSource;
-import com.rival.rivalrecipes.data.source.MockDataSource;
+import com.rival.rivalrecipes.data.source.RemoteDataSource;
+import com.rival.rivalrecipes.data.source.LocalDataSource;
 import com.rival.rivalrecipes.util.NetworkUtils;
 
 import org.json.JSONException;
@@ -23,21 +23,21 @@ public class CompositeDataSource implements DataSource {
     protected static CompositeDataSource sCompositeDataSource;
 
     private Context applicationContext;
-    private LiveDataSource liveDataSource;
-    private MockDataSource mockDataSource;
+    private RemoteDataSource remoteDataSource;
+    private LocalDataSource localDataSource;
 
-    public static void init(Context applicationContext, LiveDataSource liveDataSource, MockDataSource mockDataSource) {
-        sCompositeDataSource = new CompositeDataSource(applicationContext, mockDataSource, liveDataSource);
+    public static void init(Context applicationContext, RemoteDataSource remoteDataSource, LocalDataSource localDataSource) {
+        sCompositeDataSource = new CompositeDataSource(applicationContext, localDataSource, remoteDataSource);
     }
 
     CompositeDataSource(
             Context applicationContext,
-            MockDataSource mockDataSource,
-            LiveDataSource liveDataSource
+            LocalDataSource localDataSource,
+            RemoteDataSource remoteDataSource
     ) {
         this.applicationContext = applicationContext;
-        this.mockDataSource = mockDataSource;
-        this.liveDataSource = liveDataSource;
+        this.localDataSource = localDataSource;
+        this.remoteDataSource = remoteDataSource;
     }
 
     public static CompositeDataSource getInstance() {
@@ -50,9 +50,9 @@ public class CompositeDataSource implements DataSource {
     @Override
     public void login(String email, String password) {
         if (NetworkUtils.isConnected(applicationContext)) {
-            liveDataSource.login(email, password);
+            remoteDataSource.login(email, password);
         } else {
-            mockDataSource.login(email, password);
+            localDataSource.login(email, password);
         }
     }
 
@@ -62,9 +62,9 @@ public class CompositeDataSource implements DataSource {
     @Override
     public boolean isLoggedIn() {
         if (NetworkUtils.isConnected(applicationContext)) {
-            return liveDataSource.isLoggedIn();
+            return remoteDataSource.isLoggedIn();
         } else {
-            return mockDataSource.isLoggedIn();
+            return localDataSource.isLoggedIn();
         }
     }
 
@@ -74,9 +74,9 @@ public class CompositeDataSource implements DataSource {
     @Override
     public JSONObject getRecipes() throws IOException, JSONException {
         if (NetworkUtils.isConnected(applicationContext)) {
-            return liveDataSource.getRecipes();
+            return remoteDataSource.getRecipes();
         } else {
-            return mockDataSource.getRecipes();
+            return localDataSource.getRecipes();
         }
     }
 
@@ -86,9 +86,9 @@ public class CompositeDataSource implements DataSource {
     @Override
     public JSONObject getRecipeImages() throws IOException, JSONException {
         if (NetworkUtils.isConnected(applicationContext)) {
-            return liveDataSource.getRecipeImages();
+            return remoteDataSource.getRecipeImages();
         } else {
-            return mockDataSource.getRecipeImages();
+            return localDataSource.getRecipeImages();
         }
     }
 
@@ -98,9 +98,9 @@ public class CompositeDataSource implements DataSource {
     @Override
     public JSONObject getRecipe(String recipeId) throws IOException, JSONException {
         if (NetworkUtils.isConnected(applicationContext)) {
-            return liveDataSource.getRecipe(recipeId);
+            return remoteDataSource.getRecipe(recipeId);
         } else {
-            return mockDataSource.getRecipe(recipeId);
+            return localDataSource.getRecipe(recipeId);
         }
     }
 

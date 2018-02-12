@@ -9,11 +9,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MockDataSource implements DataSource {
+public class LocalDataSource implements DataSource {
 
     private Context context;
 
-    public MockDataSource(Context context) {
+    public LocalDataSource(Context context) {
         this.context = context;
     }
 
@@ -42,11 +42,11 @@ public class MockDataSource implements DataSource {
         return new JSONObject(getString("json/recipes/" + recipeId + ".json"));
     }
 
-    protected String getString(String urlString) throws IOException {
+    private String getString(String urlString) throws IOException {
         return new String(getBytes(urlString), "UTF-8");
     }
 
-    protected byte[] getBytes(String fileName) throws IOException {
+    private byte[] getBytes(String fileName) throws IOException {
         InputStream inputStream = null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
