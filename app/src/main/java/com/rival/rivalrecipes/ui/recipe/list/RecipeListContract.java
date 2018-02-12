@@ -13,6 +13,8 @@ import java.util.List;
 public class RecipeListContract {
 
     interface View {
+        void hideProgressBar();
+        void showProgressBar();
         void showRecipeViewModels(List<RecipeViewModel> viewModels);
     }
 
@@ -23,10 +25,6 @@ public class RecipeListContract {
     interface Repository {
         JSONObject loadRecipes();
         JSONObject loadRecipeImages();
-    }
-
-    interface ViewModel {
-
     }
 
 }

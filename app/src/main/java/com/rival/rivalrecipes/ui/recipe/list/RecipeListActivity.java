@@ -2,8 +2,6 @@ package com.rival.rivalrecipes.ui.recipe.list;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -12,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.rival.rivalrecipes.R;
 import com.rival.rivalrecipes.data.CompositeDataSource;
@@ -35,34 +34,28 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
 
     private String TAG = RecipeListActivity.class.getSimpleName();
 
+    private List<RecipeViewModel> viewModels = new ArrayList<>();
     private RecipeListContract.Presenter presenter;
-
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
-    private boolean isTwoPane;
-    private List<RecipeViewModel> viewModels = new ArrayList<RecipeViewModel>();
     private SimpleItemRecyclerViewAdapter adapter;
+
+    private boolean isTwoPane;
+
+    // View(s)
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
+        onCreateView();
+    }
+
+    private void onCreateView() {
         setContentView(R.layout.activity_recipe_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         if (findViewById(R.id.recipe_detail_container) != null) {
             // The detail container view will be present only in the
@@ -76,20 +69,15 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
+        progressBar = findViewById(R.id.progressBar);
         presenter = new RecipeListPresenter(this, new RecipeListRepository(CompositeDataSource.getInstance()));
+
         getSupportLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
         getSupportLoaderManager().restartLoader(0, null, this).forceLoad();
     }
 
@@ -101,7 +89,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     //region LoaderCallbacks
     @Override
     public Loader<List<RecipeViewModel>> onCreateLoader(int i, Bundle bundle) {
-        Log.d(TAG, "onCreateLoader");
+        showProgressBar();
         return new AsyncTaskLoader<List<RecipeViewModel>>(this) {
             @Override
             public List<RecipeViewModel> loadInBackground() {
@@ -112,15 +100,29 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
 
     @Override
     public void onLoadFinished(Loader<List<RecipeViewModel>> loader, List<RecipeViewModel> viewModels) {
-        Log.d(TAG, "onLoadFinished: " + viewModels.toString());
+        hideProgressBar();
         showRecipeViewModels(viewModels);
     }
 
     @Override
     public void onLoaderReset(Loader<List<RecipeViewModel>> loader) {
-        Log.d(TAG, "onLoadFinished");
+        hideProgressBar();
     }
     //endregion
+
+    @Override
+    public void hideProgressBar() {
+        if (this.progressBar != null) {
+            this.progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showProgressBar() {
+        if (this.progressBar != null) {
+            this.progressBar.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public void showRecipeViewModels(List<RecipeViewModel> viewModels) {
