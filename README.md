@@ -1,6 +1,6 @@
 # Recipes
 
-ACCOMPLISHED:
+## ACCOMPLISHED:
 Built a RemoteDataSource using HttpUrlConnection
 
 Built a LocalDataSource using Android Assets folder
@@ -15,7 +15,7 @@ Used Glide for Image Loading
 
 
 
-TODO:
+## TODO:
 Add DataModels for network responses
 
 Tidy up exception handling in RemoteDataSource
@@ -26,5 +26,5 @@ Leverage RecipeListContract to write RecipeListPresenterTests
 
 
 
-NOTE:
+## NOTE:
 Usually, I would have used the third party dependencies listed in app/build.gradle. In this case, I commented them out due to the projects requirements.
