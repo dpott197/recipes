@@ -8,13 +8,11 @@ import java.io.IOException;
 
 public interface DataSource {
 
-    // Accessor(s)
+    // Request(s)
 
     boolean isLoggedIn();
 
-    // Request(s)
-
-    void login(String email, String password) throws IOException, JSONException;
+    boolean login(String email, String password);
 
     JSONObject getRecipes() throws IOException, JSONException;
 

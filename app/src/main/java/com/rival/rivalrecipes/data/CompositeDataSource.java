@@ -48,11 +48,11 @@ public class CompositeDataSource implements DataSource {
      * Always perform asynchronously
      */
     @Override
-    public void login(String email, String password) {
+    public boolean login(String email, String password) {
         if (NetworkUtils.isConnected(applicationContext)) {
-            remoteDataSource.login(email, password);
+            return remoteDataSource.login(email, password);
         } else {
-            localDataSource.login(email, password);
+            return localDataSource.login(email, password);
         }
     }
 

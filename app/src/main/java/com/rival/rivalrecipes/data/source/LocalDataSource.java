@@ -18,8 +18,8 @@ public class LocalDataSource implements DataSource {
     }
 
     @Override
-    public void login(String email, String password) {
-        // do nothing
+    public boolean login(String email, String password) {
+        return true;
     }
 
     @Override

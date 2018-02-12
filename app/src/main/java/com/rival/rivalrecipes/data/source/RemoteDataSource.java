@@ -1,5 +1,6 @@
 package com.rival.rivalrecipes.data.source;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -27,27 +28,31 @@ public class RemoteDataSource implements DataSource {
     private static final String RECIPES_PATH = "/recipes";
     private static final String RECIPE_IMAGES_PATH = "/recipe-images";
 
-    // Header(s)
+    // Http Method(s)
+    private static final String POST = "POST";
+
+    // Http Header(s)
+    private static final String ACCEPT = "Accept";
     private static final String APPLICATION_JSON = "application/json";
     private static final String AUTHORIZATION = "Authorization";
     private static final String CONTENT_TYPE = "Content-Type";
-    private static final String POST = "POST";
-    public static final String ACCEPT = "Accept";
 
     protected static RemoteDataSource sRecipeService;
+
+    private final Context context;
 
     public void setUserToken(String userToken) {
         this.userToken = userToken;
     }
 
-    private String userToken = "validtoken12345";
+    private String userToken; //= "validtoken12345";
 
-    public RemoteDataSource() {
-
+    public RemoteDataSource(Context context) {
+        this.context = context;
     }
 
-    public static void init() {
-        sRecipeService = new RemoteDataSource();
+    public static void init(Context context) {
+        sRecipeService = new RemoteDataSource(context);
     }
 
     public static RemoteDataSource getInstance() {
@@ -55,7 +60,7 @@ public class RemoteDataSource implements DataSource {
     }
 
     @Override
-    public void login(String email, String password) {
+    public boolean login(String email, String password) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("email", email);
@@ -71,9 +76,13 @@ public class RemoteDataSource implements DataSource {
 
             if (responseJsonObject.has("user_token")) {
                 setUserToken(responseJsonObject.getString("user_token"));
+                return true;
+            } else {
+                return false;
             }
         } catch (IOException | JSONException | NullPointerException e) {
             Log.e(TAG, "login(...) failed", e);
+            return false;
         }
     }
 
@@ -153,7 +162,7 @@ public class RemoteDataSource implements DataSource {
             connection.setDoInput(true);
             connection.setRequestMethod(POST);
             connection.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
-            connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
+            //connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
 
             OutputStreamWriter streamWriter = new OutputStreamWriter(connection.getOutputStream());
             streamWriter.write(jsonObject.toString());

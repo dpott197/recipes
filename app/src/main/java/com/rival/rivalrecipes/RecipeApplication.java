@@ -11,7 +11,7 @@ public class RecipeApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CompositeDataSource.init(this, new RemoteDataSource(), new LocalDataSource(this));
+        CompositeDataSource.init(this, new RemoteDataSource(this), new LocalDataSource(this));
     }
 
 }
