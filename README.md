@@ -7,7 +7,7 @@ Built a RemoteDataSource using HttpUrlConnection
 
 Built a LocalDataSource using Android Assets folder
 
-Build a CompositeDataSource using RemoteDataSource and LocalDataSource
+Built a CompositeDataSource using RemoteDataSource and LocalDataSource
 
 Used AsyncTask to manage login request
 
