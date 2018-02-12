@@ -36,7 +36,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
 
     private List<RecipeViewModel> viewModels = new ArrayList<>();
     private RecipeListContract.Presenter presenter;
-    private SimpleItemRecyclerViewAdapter adapter;
+    private RecipeRecyclerViewAdapter adapter;
 
     private boolean isTwoPane;
 
@@ -82,7 +82,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        adapter = new SimpleItemRecyclerViewAdapter(this, viewModels, isTwoPane);
+        adapter = new RecipeRecyclerViewAdapter(this, viewModels, isTwoPane);
         recyclerView.setAdapter(adapter);
     }
 

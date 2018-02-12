@@ -1,12 +1,8 @@
 package com.rival.rivalrecipes.ui.recipe.list;
 
-import android.util.Log;
-
 import com.rival.rivalrecipes.data.JsonParser;
 import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -31,14 +27,7 @@ public class RecipeListPresenter implements RecipeListContract.Presenter {
     public List<RecipeViewModel> showRecipeViewModels() {
         JSONObject recipesResponseJsonObject = repository.loadRecipes();
         JSONObject imagesResponseJsonObject = repository.loadRecipeImages();
-
-        try {
-            JSONArray imageJsonArray = imagesResponseJsonObject.getJSONArray(JsonParser.RESULTS);
-        } catch (JSONException e) {
-            Log.e(TAG, "", e);
-        }
-
-        return JsonParser.getRecipes(recipesResponseJsonObject);
+        return JsonParser.getRecipes(recipesResponseJsonObject, imagesResponseJsonObject);
     }
 
 }

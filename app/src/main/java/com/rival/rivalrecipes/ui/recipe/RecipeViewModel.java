@@ -11,21 +11,21 @@ public class RecipeViewModel implements Serializable {
     private final String id;
     private final String name;
     private final String instructions;
-    private final String smallUrl;
-    private final String largeUrl;
+    private final String smallImageUrl;
+    private final String largeImageUrl;
 
     public RecipeViewModel(
             String id,
             String name,
             String instructions,
-            String smallUrl,
-            String largeUrl
+            String smallImageUrl,
+            String largeImageUrl
     ) {
         this.id = id;
         this.name = name;
         this.instructions = instructions;
-        this.smallUrl = smallUrl;
-        this.largeUrl = largeUrl;
+        this.smallImageUrl = smallImageUrl;
+        this.largeImageUrl = largeImageUrl;
     }
 
     public String getId() {
@@ -40,18 +40,17 @@ public class RecipeViewModel implements Serializable {
         return instructions;
     }
 
-    public String getSmallUrl() {
-        return smallUrl;
+    public String getSmallImageUrl() {
+        return smallImageUrl;
     }
 
-    public String getLargeUrl() {
-        return largeUrl;
+    public String getLargeImageUrl() {
+        return largeImageUrl;
     }
 
     @Override
     public String toString() {
         return name;
     }
-
 
 }

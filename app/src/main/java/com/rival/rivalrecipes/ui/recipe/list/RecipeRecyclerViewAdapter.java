@@ -4,8 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.rival.rivalrecipes.R;
 import com.rival.rivalrecipes.ui.Router;
 import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
@@ -18,13 +21,13 @@ import java.util.List;
  * Created by darren on 2/11/18.
  */
 
-public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder> {
 
     private final RecipeListActivity parentActivity;
     private final List<RecipeViewModel> recipeViewModels;
     private final boolean isTwoPane;
 
-    SimpleItemRecyclerViewAdapter(
+    RecipeRecyclerViewAdapter(
             RecipeListActivity parent,
             List<RecipeViewModel> recipeViewModels,
             boolean twoPane
@@ -35,17 +38,25 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
     }
 
     @Override
-    public SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecipeRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_list_content, parent, false);
-        return new SimpleItemRecyclerViewAdapter.ViewHolder(view);
+        return new RecipeRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
-        holder.idTextView.setText(recipeViewModels.get(position).getId());
-        holder.nameTextView.setText(recipeViewModels.get(position).getName());
-
+    public void onBindViewHolder(final RecipeRecyclerViewAdapter.ViewHolder holder, int position) {
+        RecipeViewModel viewModel = recipeViewModels.get(position);
+        holder.nameTextView.setText(viewModel.getName());
         holder.itemView.setTag(recipeViewModels.get(position));
+
+        RequestOptions myOptions = new RequestOptions()
+                .fitCenter()
+                .override(48, 48);
+
+        Glide.with(parentActivity)
+                .applyDefaultRequestOptions(myOptions)
+                .load(viewModel.getSmallImageUrl())
+                .into(holder.thumbnailImageView);
     }
 
     @Override
@@ -54,17 +65,17 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final TextView idTextView;
         final TextView nameTextView;
+        final ImageView thumbnailImageView;
 
         ViewHolder(View view) {
             super(view);
-            idTextView = view.findViewById(R.id.identifierTextView);
             nameTextView = view.findViewById(R.id.nameTextView);
+            thumbnailImageView = view.findViewById(R.id.thumbnailImageView);
 
             view.setOnClickListener(this);
-            idTextView.setOnClickListener(this);
             nameTextView.setOnClickListener(this);
+            thumbnailImageView.setOnClickListener(this);
         }
 
         @Override
