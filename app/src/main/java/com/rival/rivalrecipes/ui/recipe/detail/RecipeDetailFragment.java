@@ -24,7 +24,7 @@ public class RecipeDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_RECIPE_VIEW_MODEL = "recipe_view_model";
+    public static final String ARG_RECIPE_VIEW_MODEL = "ARG_RECIPE_VIEW_MODEL";
 
     /**
      * The recipe view model this fragment is presenting.
@@ -38,6 +38,16 @@ public class RecipeDetailFragment extends Fragment {
     public RecipeDetailFragment() {
     }
 
+    public static RecipeDetailFragment newInstance(RecipeViewModel recipeViewModel) {
+        RecipeDetailFragment fragment = new RecipeDetailFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putSerializable(RecipeDetailFragment.ARG_RECIPE_VIEW_MODEL, recipeViewModel);
+        fragment.setArguments(arguments);
+
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +59,7 @@ public class RecipeDetailFragment extends Fragment {
             recipeViewModel = (RecipeViewModel) (getArguments().getSerializable(ARG_RECIPE_VIEW_MODEL));
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 appBarLayout.setTitle(recipeViewModel.getName());
             }

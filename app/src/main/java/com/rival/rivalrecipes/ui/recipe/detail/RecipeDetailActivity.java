@@ -12,7 +12,9 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 import com.rival.rivalrecipes.R;
+import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
 import com.rival.rivalrecipes.ui.recipe.list.RecipeListActivity;
+import com.rival.rivalrecipes.util.FragmentUtils;
 
 /**
  * An activity representing a single RecipeViewModel detail screen. This
@@ -22,11 +24,13 @@ import com.rival.rivalrecipes.ui.recipe.list.RecipeListActivity;
  */
 public class RecipeDetailActivity extends AppCompatActivity {
 
+    public static final String EXTRA_RECIPE_VIEW_MODEL = "EXTRA_RECIPE_VIEW_MODEL";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -56,14 +60,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(RecipeDetailFragment.ARG_RECIPE_VIEW_MODEL,
-                    getIntent().getStringExtra(RecipeDetailFragment.ARG_RECIPE_VIEW_MODEL));
-            RecipeDetailFragment fragment = new RecipeDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.recipe_detail_container, fragment)
-                    .commit();
+            RecipeViewModel recipeViewModel = (RecipeViewModel) getIntent().getSerializableExtra(EXTRA_RECIPE_VIEW_MODEL);
+            FragmentUtils.replace(getSupportFragmentManager(), R.id.recipe_detail_container, RecipeDetailFragment.newInstance(recipeViewModel));
         }
     }
 
