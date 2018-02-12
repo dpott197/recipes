@@ -1,18 +1,20 @@
 package com.rival.rivalrecipes.data;
 
-import com.rival.rivalrecipes.data.response.LoginResponse;
+import org.json.JSONObject;
+
 
 public interface RecipeService {
 
     // TODO: /login (POST)
-    LoginResponse login(String email, String password);
+    void login(String email, String password);
 
     // TODO: recipes (GET)
+    JSONObject getRecipes();
 
     // TODO: /recipe-images (GET)
+    JSONObject getRecipeImages();
 
     // TODO: /recipes/:id (GET)
-
-
+    JSONObject getRecipeImage();
 
 }
