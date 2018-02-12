@@ -1,7 +1,5 @@
 package com.rival.rivalrecipes.ui.recipe.list;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -13,18 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.rival.rivalrecipes.R;
 import com.rival.rivalrecipes.data.CompositeDataSource;
 import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
 import com.rival.rivalrecipes.ui.recipe.detail.RecipeDetailActivity;
-import com.rival.rivalrecipes.ui.recipe.detail.RecipeDetailFragment;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,7 +33,7 @@ import java.util.List;
 public class RecipeListActivity extends AppCompatActivity implements RecipeListContract.View,
         LoaderManager.LoaderCallbacks<List<RecipeViewModel>> {
 
-    private String TAG = "RecipeListActivity";
+    private String TAG = RecipeListActivity.class.getSimpleName();
 
     private RecipeListContract.Presenter presenter;
 
@@ -48,6 +42,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
      * device.
      */
     private boolean isTwoPane;
+    private List<RecipeViewModel> viewModels = new ArrayList<RecipeViewModel>();
+    private SimpleItemRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +94,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, CompositeDataSource.ITEMS, isTwoPane));
+        adapter = new SimpleItemRecyclerViewAdapter(this, viewModels, isTwoPane);
+        recyclerView.setAdapter(adapter);
     }
 
     //region LoaderCallbacks
@@ -116,6 +113,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     @Override
     public void onLoadFinished(Loader<List<RecipeViewModel>> loader, List<RecipeViewModel> viewModels) {
         Log.d(TAG, "onLoadFinished: " + viewModels.toString());
+        showRecipeViewModels(viewModels);
     }
 
     @Override
@@ -126,77 +124,9 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
 
     @Override
     public void showRecipeViewModels(List<RecipeViewModel> viewModels) {
-
-    }
-
-    public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
-        private final RecipeListActivity mParentActivity;
-        private final List<RecipeViewModel> mValues;
-        private final boolean mTwoPane;
-
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RecipeViewModel item = (RecipeViewModel) view.getTag();
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item.getId());
-                    RecipeDetailFragment fragment = new RecipeDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.recipe_detail_container, fragment)
-                            .commit();
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, item.getId());
-
-                    context.startActivity(intent);
-                }
-            }
-        };
-
-        SimpleItemRecyclerViewAdapter(RecipeListActivity parent,
-                                      List<RecipeViewModel> items,
-                                      boolean twoPane) {
-            mValues = items;
-            mParentActivity = parent;
-            mTwoPane = twoPane;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recipe_list_content, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).getId());
-            holder.mNameTextView.setText(mValues.get(position).getName());
-
-            holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValues.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mNameTextView;
-
-            ViewHolder(View view) {
-                super(view);
-                mIdView = (TextView) view.findViewById(R.id.identifierTextView);
-                mNameTextView = (TextView) view.findViewById(R.id.nameTextView);
-            }
-        }
+        this.viewModels.clear();
+        this.viewModels.addAll(viewModels);
+        adapter.notifyDataSetChanged();
     }
 
 }

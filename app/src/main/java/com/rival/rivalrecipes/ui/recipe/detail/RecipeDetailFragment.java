@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rival.rivalrecipes.R;
-import com.rival.rivalrecipes.ui.recipe.list.RecipeListActivity;
 import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
-import com.rival.rivalrecipes.data.CompositeDataSource;
+import com.rival.rivalrecipes.ui.recipe.list.RecipeListActivity;
 
 /**
  * A fragment representing a single RecipeViewModel detail screen.
@@ -25,12 +24,12 @@ public class RecipeDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_RECIPE_VIEW_MODEL = "recipe_view_model";
 
     /**
-     * The dummy name this fragment is presenting.
+     * The recipe view model this fragment is presenting.
      */
-    private RecipeViewModel mItem;
+    private RecipeViewModel recipeViewModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,16 +42,16 @@ public class RecipeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy name specified by the fragment
+        if (getArguments().containsKey(ARG_RECIPE_VIEW_MODEL)) {
+            // Load the recipe name specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load name from a name provider.
-            mItem = CompositeDataSource.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            recipeViewModel = (RecipeViewModel) (getArguments().getSerializable(ARG_RECIPE_VIEW_MODEL));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.getName());
+                appBarLayout.setTitle(recipeViewModel.getName());
             }
         }
     }
@@ -62,9 +61,9 @@ public class RecipeDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
 
-        // Show the dummy name as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.getInstructions());
+        // Show the recipe name as text in a TextView.
+        if (recipeViewModel != null) {
+            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(recipeViewModel.getInstructions());
         }
 
         return rootView;

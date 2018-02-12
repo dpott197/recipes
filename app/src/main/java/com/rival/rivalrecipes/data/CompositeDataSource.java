@@ -5,17 +5,12 @@ import android.content.Context;
 import com.rival.rivalrecipes.data.source.DataSource;
 import com.rival.rivalrecipes.data.source.LiveDataSource;
 import com.rival.rivalrecipes.data.source.MockDataSource;
-import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
 import com.rival.rivalrecipes.util.NetworkUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Helper class for providing sample name for user interfaces created by
@@ -48,50 +43,6 @@ public class CompositeDataSource implements DataSource {
     public static CompositeDataSource getInstance() {
         return sCompositeDataSource;
     }
-
-    /**
-     * An array of sample (dummy) items.
-     */
-    public static final List<RecipeViewModel> ITEMS = new ArrayList<RecipeViewModel>();
-
-    /**
-     * A map of sample (dummy) items, by ID.
-     */
-    public static final Map<String, RecipeViewModel> ITEM_MAP = new HashMap<String, RecipeViewModel>();
-
-    private static final int COUNT = 25;
-
-    static {
-        // Add some sample items.
-        for (int i = 1; i <= COUNT; i++) {
-            addItem(createDummyItem(i));
-        }
-    }
-
-    private static void addItem(RecipeViewModel item) {
-        ITEMS.add(item);
-        ITEM_MAP.put(item.getId(), item);
-    }
-
-    private static RecipeViewModel createDummyItem(int position) {
-        return new RecipeViewModel(
-                String.valueOf(position),
-                "Item " + position,
-                makeDetails(position),
-                null,
-                null
-        );
-    }
-
-    private static String makeDetails(int position) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Details about Item: ").append(position);
-        for (int i = 0; i < position; i++) {
-            builder.append("\nMore instructions information here.");
-        }
-        return builder.toString();
-    }
-
 
     /**
      * Always perform asynchronously

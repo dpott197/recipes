@@ -1,10 +1,12 @@
 package com.rival.rivalrecipes.ui.recipe;
 
+import java.io.Serializable;
+
 /**
  * Created by darren on 2/11/18.
  */
 
-public class RecipeViewModel {
+public class RecipeViewModel implements Serializable {
 
     private final String id;
     private final String name;
