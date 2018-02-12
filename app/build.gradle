@@ -18,13 +18,56 @@ android {
     }
 }
 
+ext {
+    glideVersion = '4.3.1'
+    hamcrestVersion = '1.3'
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    powerMockitoVersion = '1.7.3'
+    retrofitVersion = '2.3.0'
+    supportLibraryVersion = '26.1.0'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
+
+    //region Support Library Dependencies
+    implementation "com.android.support:appcompat-v7:${supportLibraryVersion}"
+    implementation "com.android.support:design:${supportLibraryVersion}"
+    implementation "com.android.support:support-v4:${supportLibraryVersion}"
+    implementation "com.android.support:recyclerview-v7:${supportLibraryVersion}"
+    //endregion
+
+    //region OkHttp
+    //implementation "com.squareup.okhttp3:logging-interceptor:3.8.1"
+    //endregion
+
+    //region Retrofit
+    //implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    //implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
+    //implementation "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
+    //end region
+
+    //Glide
+    compile "com.github.bumptech.glide:glide:${glideVersion}"
+    //endregion
+
+    //region Rx
+    //implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
+    //implementation "io.reactivex.rxjava2:rxjava:2.1.1"
+    //endregion
+
+    //region Unit Test Dependency
+    //testImplementation "junit:junit:${junitVersion}"
+    //testImplementation "org.mockito:mockito-all:${mockitoVersion}"
+    //testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+    //testImplementation "org.powermock:powermock-module-junit4:${powerMockitoVersion}"
+    //testImplementation "org.powermock:powermock-api-mockito:${powerMockitoVersion}"
+    //endregion
+
+    //region Android Test Dependencies - Require Android Framework and Emulator
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    //endregion
+
 }
