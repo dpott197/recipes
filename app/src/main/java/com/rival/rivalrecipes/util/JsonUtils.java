@@ -16,23 +16,23 @@ import java.util.Map;
 
 public class JsonUtils {
 
-    public static Map<String, Object> jsonToMap(JSONObject json) throws JSONException {
+    public static Map<String, Object> jsonToMap(JSONObject jsonObject) throws JSONException {
         Map<String, Object> retMap = new HashMap<String, Object>();
 
-        if (json != JSONObject.NULL) {
-            retMap = toMap(json);
+        if (jsonObject != JSONObject.NULL) {
+            retMap = toMap(jsonObject);
         }
 
         return retMap;
     }
 
-    public static Map<String, Object> toMap(JSONObject object) throws JSONException {
+    public static Map<String, Object> toMap(JSONObject jsonObject) throws JSONException {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        Iterator<String> keysItr = object.keys();
+        Iterator<String> keysItr = jsonObject.keys();
         while (keysItr.hasNext()) {
             String key = keysItr.next();
-            Object value = object.get(key);
+            Object value = jsonObject.get(key);
 
             if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);
@@ -45,11 +45,11 @@ public class JsonUtils {
         return map;
     }
 
-    public static List<Object> toList(JSONArray array) throws JSONException {
+    public static List<Object> toList(JSONArray jsonArray) throws JSONException {
         List<Object> list = new ArrayList<Object>();
 
-        for (int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            Object value = jsonArray.get(i);
             if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);
             } else if (value instanceof JSONObject) {
