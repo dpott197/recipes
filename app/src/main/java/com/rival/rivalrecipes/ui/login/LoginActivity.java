@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.rival.rivalrecipes.R;
+import com.rival.rivalrecipes.data.DataManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -303,9 +304,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            return false;
+            DataManager.getInstance().login(mEmail, mPassword);
+            return DataManager.getInstance().isLoggedIn();
         }
 
         @Override

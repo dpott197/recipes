@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes.ui.recipe;
+package com.rival.rivalrecipes.ui.recipe.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,11 +12,12 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 import com.rival.rivalrecipes.R;
+import com.rival.rivalrecipes.ui.recipe.master.RecipeListActivity;
 
 /**
- * An activity representing a single Recipe detail screen. This
+ * An activity representing a single RecipeViewModel detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
+ * item instructions are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
 public class RecipeDetailActivity extends AppCompatActivity {
@@ -73,7 +74,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users
             // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
+            // more instructions, see the Navigation pattern on Android Design:
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
