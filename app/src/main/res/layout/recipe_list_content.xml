@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/thumbnailImageView"
-        android:layout_width="48dp"
-        android:layout_height="48dp"/>
+        android:layout_width="@dimen/thumbnail_size"
+        android:layout_height="@dimen/thumbnail_size"/>
 
     <TextView
         android:id="@+id/nameTextView"
