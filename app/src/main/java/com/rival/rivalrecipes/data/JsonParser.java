@@ -29,7 +29,7 @@ public class JsonParser {
         ArrayList<RecipeViewModel> viewModels = new ArrayList<>();
 
         try {
-            JSONArray resultsJSONArray = recipesResponseJsonObject.getJSONArray(RESULTS);
+            JSONArray resultsJSONArray = recipesResponseJsonObject.getJSONArray(JsonParser.RESULTS);
             for (int i = 0; i < resultsJSONArray.length(); i++) {
                 JSONObject recipeJsonObject = resultsJSONArray.getJSONObject(i);
 
@@ -39,12 +39,8 @@ public class JsonParser {
                 String sm_url = "";
                 String lg_url = "";
 
-                if (recipeJsonObject.has(RECIPE_ID)) {
-                    recipeId = recipeJsonObject.getString(RECIPE_ID);
-                }
-
-                if (recipeJsonObject.has(RECIPE_NAME)) {
-                    recipeName = recipeJsonObject.getString(RECIPE_NAME);
+                if (recipeJsonObject.has(JsonParser.RECIPE_NAME)) {
+                    recipeName = recipeJsonObject.getString(JsonParser.RECIPE_NAME);
                 }
 
                 viewModels.add(new RecipeViewModel(

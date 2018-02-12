@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,43 +29,16 @@ public class RecipeListPresenter implements RecipeListContract.Presenter {
 
     @Override
     public List<RecipeViewModel> showRecipeViewModels() {
-        List<RecipeViewModel> viewModels = new ArrayList<RecipeViewModel>();
         JSONObject recipesResponseJsonObject = repository.loadRecipes();
         JSONObject imagesResponseJsonObject = repository.loadRecipeImages();
+
         try {
             JSONArray imageJsonArray = imagesResponseJsonObject.getJSONArray(JsonParser.RESULTS);
         } catch (JSONException e) {
             Log.e(TAG, "", e);
         }
 
-        try {
-            JSONArray resultsJSONArray = recipesResponseJsonObject.getJSONArray(JsonParser.RESULTS);
-            for (int i = 0; i < resultsJSONArray.length(); i++) {
-                JSONObject recipeJsonObject = resultsJSONArray.getJSONObject(i);
-
-                String recipeId = "";
-                String recipeName = "";
-                String recipeInstructions = "";
-                String sm_url = "";
-                String lg_url = "";
-
-                if (recipeJsonObject.has(JsonParser.RECIPE_NAME)) {
-                    recipeName = recipeJsonObject.getString(JsonParser.RECIPE_NAME);
-                }
-
-                viewModels.add(new RecipeViewModel(
-                        recipeId,
-                        recipeName,
-                        recipeInstructions,
-                        sm_url,
-                        lg_url
-                ));
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "", e);
-        }
-
-        return viewModels;
+        return JsonParser.getRecipes(recipesResponseJsonObject);
     }
 
 }
