@@ -1,4 +1,4 @@
-package com.rival.rivalrecipes.ui.recipe.master;
+package com.rival.rivalrecipes.ui.recipe.list;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,13 +19,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rival.rivalrecipes.R;
-import com.rival.rivalrecipes.data.source.LiveDataSource;
+import com.rival.rivalrecipes.data.CompositeDataSource;
 import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
-import com.rival.rivalrecipes.data.DataManager;
 import com.rival.rivalrecipes.ui.recipe.detail.RecipeDetailActivity;
 import com.rival.rivalrecipes.ui.recipe.detail.RecipeDetailFragment;
 
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -38,16 +36,18 @@ import java.util.List;
  * item instructions. On tablets, the activity presents the list of items and
  * item instructions side-by-side using two vertical panes.
  */
-public class RecipeListActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<JSONObject> {
+public class RecipeListActivity extends AppCompatActivity implements RecipeListContract.View,
+        LoaderManager.LoaderCallbacks<List<RecipeViewModel>> {
 
     private String TAG = "RecipeListActivity";
+
+    private RecipeListContract.Presenter presenter;
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    private boolean isTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,49 +73,61 @@ public class RecipeListActivity extends AppCompatActivity implements
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
-            mTwoPane = true;
+            isTwoPane = true;
         }
 
         View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
-        getSupportLoaderManager().initLoader(0, null, this);
+        presenter = new RecipeListPresenter(this, new RecipeListRepository(CompositeDataSource.getInstance()));
+        getSupportLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
-        getSupportLoaderManager().restartLoader(0, null, this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        getSupportLoaderManager().restartLoader(0, null, this).forceLoad();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DataManager.ITEMS, mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, CompositeDataSource.ITEMS, isTwoPane));
     }
 
     //region LoaderCallbacks
     @Override
-    public Loader<JSONObject> onCreateLoader(int i, Bundle bundle) {
+    public Loader<List<RecipeViewModel>> onCreateLoader(int i, Bundle bundle) {
         Log.d(TAG, "onCreateLoader");
-        return new AsyncTaskLoader<JSONObject>(this) {
+        return new AsyncTaskLoader<List<RecipeViewModel>>(this) {
             @Override
-            public JSONObject loadInBackground() {
-                return LiveDataSource.getInstance().getRecipes();
+            public List<RecipeViewModel> loadInBackground() {
+                return presenter.showRecipeViewModels();
             }
         };
     }
 
     @Override
-    public void onLoadFinished(Loader<JSONObject> loader, JSONObject jsonObject) {
-        Log.d(TAG, "onLoadFinished");
+    public void onLoadFinished(Loader<List<RecipeViewModel>> loader, List<RecipeViewModel> viewModels) {
+        Log.d(TAG, "onLoadFinished: " + viewModels.toString());
     }
 
     @Override
-    public void onLoaderReset(Loader<JSONObject> loader) {
+    public void onLoaderReset(Loader<List<RecipeViewModel>> loader) {
         Log.d(TAG, "onLoadFinished");
     }
     //endregion
+
+    @Override
+    public void showRecipeViewModels(List<RecipeViewModel> viewModels) {
+
+    }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
@@ -123,13 +135,14 @@ public class RecipeListActivity extends AppCompatActivity implements
         private final RecipeListActivity mParentActivity;
         private final List<RecipeViewModel> mValues;
         private final boolean mTwoPane;
+
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RecipeViewModel item = (RecipeViewModel) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item.getId());
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -138,7 +151,7 @@ public class RecipeListActivity extends AppCompatActivity implements
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, item.getId());
 
                     context.startActivity(intent);
                 }
@@ -162,8 +175,8 @@ public class RecipeListActivity extends AppCompatActivity implements
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mNameTextView.setText(mValues.get(position).name);
+            holder.mIdView.setText(mValues.get(position).getId());
+            holder.mNameTextView.setText(mValues.get(position).getName());
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -185,4 +198,5 @@ public class RecipeListActivity extends AppCompatActivity implements
             }
         }
     }
+
 }

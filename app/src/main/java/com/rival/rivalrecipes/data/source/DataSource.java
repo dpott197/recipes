@@ -1,18 +1,25 @@
 package com.rival.rivalrecipes.data.source;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 
 public interface DataSource {
 
-    void login(String email, String password);
+    // Accessor(s)
 
     boolean isLoggedIn();
 
-    JSONObject getRecipes();
+    // Request(s)
 
-    JSONObject getRecipeImages();
+    void login(String email, String password) throws IOException, JSONException;
 
-    JSONObject getRecipe(String recipeId);
+    JSONObject getRecipes() throws IOException, JSONException;
+
+    JSONObject getRecipe(String recipeId) throws IOException, JSONException;
+
+    JSONObject getRecipeImages() throws IOException, JSONException;
 
 }

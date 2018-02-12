@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rival.rivalrecipes.R;
-import com.rival.rivalrecipes.ui.recipe.master.RecipeListActivity;
+import com.rival.rivalrecipes.ui.recipe.list.RecipeListActivity;
 import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
-import com.rival.rivalrecipes.data.DataManager;
+import com.rival.rivalrecipes.data.CompositeDataSource;
 
 /**
  * A fragment representing a single RecipeViewModel detail screen.
@@ -47,12 +47,12 @@ public class RecipeDetailFragment extends Fragment {
             // Load the dummy name specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load name from a name provider.
-            mItem = DataManager.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = CompositeDataSource.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.name);
+                appBarLayout.setTitle(mItem.getName());
             }
         }
     }
@@ -64,7 +64,7 @@ public class RecipeDetailFragment extends Fragment {
 
         // Show the dummy name as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.instructions);
+            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.getInstructions());
         }
 
         return rootView;

@@ -11,11 +11,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
+
 
 public class LiveDataSource implements DataSource {
 
@@ -23,14 +23,16 @@ public class LiveDataSource implements DataSource {
 
     // URL(s) and Path(s)
     private static final String BASE_URL = "https://mobile.rival.run";
-    private static final String LOGIN_PATH = "/recipes";
+    private static final String LOGIN_PATH = "/login";
     private static final String RECIPES_PATH = "/recipes";
+    private static final String RECIPE_IMAGES_PATH = "/recipe-images";
 
     // Header(s)
     private static final String APPLICATION_JSON = "application/json";
     private static final String AUTHORIZATION = "Authorization";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String POST = "POST";
+    public static final String ACCEPT = "Accept";
 
     protected static LiveDataSource sRecipeService;
 
@@ -59,7 +61,7 @@ public class LiveDataSource implements DataSource {
             jsonObject.put("email", email);
             jsonObject.put("password", password);
         } catch (JSONException e) {
-            Log.e(TAG, "", e);
+            Log.e(TAG, "jsonObject.put(...) failed", e);
         }
 
         String urlString = BASE_URL + LOGIN_PATH;
@@ -71,7 +73,7 @@ public class LiveDataSource implements DataSource {
                 setUserToken(responseJsonObject.getString("user_token"));
             }
         } catch (IOException | JSONException | NullPointerException e) {
-            Log.e(TAG, "login failed", e);
+            Log.e(TAG, "login(...) failed", e);
         }
     }
 
@@ -81,25 +83,33 @@ public class LiveDataSource implements DataSource {
     }
 
     @Override
-    public JSONObject getRecipes() {
+    public JSONObject getRecipes() throws IOException, JSONException {
         String urlString = BASE_URL + RECIPES_PATH;
-        try {
-            String response = getString(urlString);
-            Log.d(TAG, response);
-        } catch (IOException e) {
-            Log.e(TAG, "", e);
-        }
-        return new JSONObject();
+        Log.d(TAG, "getRecipes() " + urlString);
+        String response = getString(urlString);
+        JSONObject responseJsonObject = new JSONObject(response);
+        Log.d(TAG, responseJsonObject.toString());
+        return responseJsonObject;
     }
 
     @Override
-    public JSONObject getRecipeImages() {
-        return new JSONObject();
+    public JSONObject getRecipeImages() throws IOException, JSONException {
+        String urlString = BASE_URL + RECIPE_IMAGES_PATH;
+        Log.d(TAG, "getRecipes() " + urlString);
+        String response = getString(urlString);
+        JSONObject responseJsonObject = new JSONObject(response);
+        Log.d(TAG, responseJsonObject.toString());
+        return responseJsonObject;
     }
 
     @Override
-    public JSONObject getRecipe(String recipeId) {
-        return new JSONObject();
+    public JSONObject getRecipe(String recipeId) throws IOException, JSONException {
+        String urlString = BASE_URL + RECIPES_PATH + "/" + recipeId;
+        Log.d(TAG, "getRecipes() " + urlString);
+        String response = getString(urlString);
+        JSONObject responseJsonObject = new JSONObject(response);
+        Log.d(TAG, responseJsonObject.toString());
+        return responseJsonObject;
     }
 
     private String getUserToken() {
@@ -112,9 +122,10 @@ public class LiveDataSource implements DataSource {
 
     protected byte[] getBytes(String urlString) throws IOException {
         URL url = new URL(urlString);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
+        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty(AUTHORIZATION, getUserToken());
+
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             InputStream inputStream = connection.getInputStream();
@@ -134,36 +145,44 @@ public class LiveDataSource implements DataSource {
     }
 
     protected String post(String urlString, JSONObject jsonObject) throws IOException {
-        URL url = new URL(urlString);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        HttpsURLConnection connection = null;
+        try {
+            URL url = new URL(urlString);
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setRequestMethod(POST);
+            connection.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+            connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
 
-        // Add Request Header(s)
-        connection.setRequestMethod(POST);
-        connection.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
-        connection.setDoOutput(true);
+            OutputStreamWriter streamWriter = new OutputStreamWriter(connection.getOutputStream());
+            streamWriter.write(jsonObject.toString());
+            streamWriter.flush();
 
-        // Send Post Request
-        OutputStream outputStream = connection.getOutputStream();
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-        outputStreamWriter.write(jsonObject.toString());
-        outputStream.flush();
-        outputStream.close();
+            StringBuilder stringBuilder = new StringBuilder();
+            if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+                InputStreamReader streamReader = new InputStreamReader(connection.getInputStream());
+                BufferedReader bufferedReader = new BufferedReader(streamReader);
+                String response = null;
+                while ((response = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(response + "\n");
+                }
+                bufferedReader.close();
 
-        int responseCode = connection.getResponseCode();
-        if (HttpsURLConnection.HTTP_OK <= responseCode && responseCode < HttpsURLConnection.HTTP_NO_CONTENT) {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = bufferedReader.readLine()) != null) {
-                response.append(inputLine);
+                Log.d(TAG, stringBuilder.toString());
+                return stringBuilder.toString();
+            } else {
+                Log.e(TAG, connection.getResponseMessage());
+                return null;
             }
-            bufferedReader.close();
-
-            return response.toString();
+        } catch (Exception exception) {
+            Log.e(TAG, exception.toString());
+            return null;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
-
-        return null;
     }
 
 }

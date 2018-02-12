@@ -2,6 +2,7 @@ package com.rival.rivalrecipes.data.source;
 
 import android.content.Context;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -27,18 +28,18 @@ public class MockDataSource implements DataSource {
     }
 
     @Override
-    public JSONObject getRecipes() {
-        return null;
+    public JSONObject getRecipes() throws IOException, JSONException {
+        return new JSONObject(getString("json/recipes.json"));
     }
 
     @Override
-    public JSONObject getRecipeImages() {
-        return null;
+    public JSONObject getRecipeImages() throws IOException, JSONException {
+        return new JSONObject(getString("json/recipe-images.json"));
     }
 
     @Override
-    public JSONObject getRecipe(String recipeId) {
-        return null;
+    public JSONObject getRecipe(String recipeId) throws IOException, JSONException {
+        return new JSONObject(getString("json/recipes/" + recipeId + ".json"));
     }
 
     protected String getString(String urlString) throws IOException {

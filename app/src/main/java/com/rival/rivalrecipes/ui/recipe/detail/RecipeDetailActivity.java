@@ -12,7 +12,7 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 import com.rival.rivalrecipes.R;
-import com.rival.rivalrecipes.ui.recipe.master.RecipeListActivity;
+import com.rival.rivalrecipes.ui.recipe.list.RecipeListActivity;
 
 /**
  * An activity representing a single RecipeViewModel detail screen. This

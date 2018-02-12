@@ -8,8 +8,10 @@ import com.rival.rivalrecipes.data.source.MockDataSource;
 import com.rival.rivalrecipes.ui.recipe.RecipeViewModel;
 import com.rival.rivalrecipes.util.NetworkUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,19 +23,19 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DataManager implements DataSource {
+public class CompositeDataSource implements DataSource {
 
-    protected static DataManager sDataManager;
+    protected static CompositeDataSource sCompositeDataSource;
 
     private Context applicationContext;
-    private MockDataSource mockDataSource;
     private LiveDataSource liveDataSource;
+    private MockDataSource mockDataSource;
 
-    public static void init(Context applicationContext, MockDataSource mockDataSource, LiveDataSource liveDataSource) {
-        sDataManager = new DataManager(applicationContext, mockDataSource, liveDataSource);
+    public static void init(Context applicationContext, LiveDataSource liveDataSource, MockDataSource mockDataSource) {
+        sCompositeDataSource = new CompositeDataSource(applicationContext, mockDataSource, liveDataSource);
     }
 
-    DataManager(
+    CompositeDataSource(
             Context applicationContext,
             MockDataSource mockDataSource,
             LiveDataSource liveDataSource
@@ -43,8 +45,8 @@ public class DataManager implements DataSource {
         this.liveDataSource = liveDataSource;
     }
 
-    public static DataManager getInstance() {
-        return sDataManager;
+    public static CompositeDataSource getInstance() {
+        return sCompositeDataSource;
     }
 
     /**
@@ -68,11 +70,17 @@ public class DataManager implements DataSource {
 
     private static void addItem(RecipeViewModel item) {
         ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+        ITEM_MAP.put(item.getId(), item);
     }
 
     private static RecipeViewModel createDummyItem(int position) {
-        return new RecipeViewModel(String.valueOf(position), "Item " + position, makeDetails(position));
+        return new RecipeViewModel(
+                String.valueOf(position),
+                "Item " + position,
+                makeDetails(position),
+                null,
+                null
+        );
     }
 
     private static String makeDetails(int position) {
@@ -113,7 +121,7 @@ public class DataManager implements DataSource {
      * Always perform asynchronously
      */
     @Override
-    public JSONObject getRecipes() {
+    public JSONObject getRecipes() throws IOException, JSONException {
         if (NetworkUtils.isConnected(applicationContext)) {
             return liveDataSource.getRecipes();
         } else {
@@ -125,7 +133,7 @@ public class DataManager implements DataSource {
      * Always perform asynchronously
      */
     @Override
-    public JSONObject getRecipeImages() {
+    public JSONObject getRecipeImages() throws IOException, JSONException {
         if (NetworkUtils.isConnected(applicationContext)) {
             return liveDataSource.getRecipeImages();
         } else {
@@ -137,7 +145,7 @@ public class DataManager implements DataSource {
      * Always perform asynchronously
      */
     @Override
-    public JSONObject getRecipe(String recipeId) {
+    public JSONObject getRecipe(String recipeId) throws IOException, JSONException {
         if (NetworkUtils.isConnected(applicationContext)) {
             return liveDataSource.getRecipe(recipeId);
         } else {
